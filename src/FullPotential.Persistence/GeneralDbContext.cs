@@ -1,6 +1,7 @@
 ﻿namespace FullPotential.Persistence;
 
 using FullPotential.Persistence.Entities;
+using FullPotential.Persistence.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 public sealed class GeneralDbContext : DbContext
@@ -28,7 +29,9 @@ public sealed class GeneralDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        EntityBase.OnModelCreating(modelBuilder.Entity<User>());
+        var helper = new ModelCreationHelper();
+
+        helper.OnModelCreating(modelBuilder.Entity<User>());
     }
 
     private void SetLastUpdated()

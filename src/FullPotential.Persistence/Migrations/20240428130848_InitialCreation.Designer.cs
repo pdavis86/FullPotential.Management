@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FullPotential.Persistence.Migrations
 {
     [DbContext(typeof(GeneralDbContext))]
-    [Migration("20240428085922_IntialCreation")]
-    partial class IntialCreation
+    [Migration("20240428130848_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,15 @@ namespace FullPotential.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("EmailAddress")
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<bool>("IsEmailAddressValidated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
@@ -63,6 +72,13 @@ namespace FullPotential.Persistence.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmailAddress")
+                        .IsUnique()
+                        .HasFilter("[IsEmailAddressValidated] = 1");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

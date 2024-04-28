@@ -1,8 +1,12 @@
 ﻿namespace FullPotential.Persistence.Entities;
 
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using FullPotential.Persistence.Utilities;
 using Microsoft.EntityFrameworkCore;
 
+[Index(nameof(UserName), IsUnique = true)]
+[ConditionalIndex(nameof(EmailAddress), $"[{nameof(IsEmailAddressValidated)}] = 1", true)]
 public class User : EntityBase
 {
     [Unicode(false)]
@@ -19,6 +23,12 @@ public class User : EntityBase
     public string? Token { get; set; }
 
     public DateTime? TokenExpiry { get; set; }
+
+    [MaxLength(320)]
+    public string? EmailAddress { get; set; }
+
+    [DefaultValue(false)]
+    public bool IsEmailAddressValidated { get; set; }
 
     public User(
         string userName,

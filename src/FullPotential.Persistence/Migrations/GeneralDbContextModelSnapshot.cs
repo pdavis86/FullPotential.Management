@@ -33,6 +33,15 @@ namespace FullPotential.Persistence.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
+                    b.Property<string>("EmailAddress")
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<bool>("IsEmailAddressValidated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
@@ -60,6 +69,13 @@ namespace FullPotential.Persistence.Migrations
                         .HasColumnType("varchar(50)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmailAddress")
+                        .IsUnique()
+                        .HasFilter("[IsEmailAddressValidated] = 1");
+
+                    b.HasIndex("UserName")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
