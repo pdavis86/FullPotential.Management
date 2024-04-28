@@ -3,6 +3,7 @@ using FullPotential.Management.Features.Security;
 using FullPotential.Management.Features.Users;
 using FullPotential.Management.Utilities;
 using FullPotential.Persistence;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SwaggerHeaderParameter>();
 });
 
+builder.Services.AddRateLimiter(options => new SlidingWindowRateLimiter().Configure(options));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -37,5 +40,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.UseMiddleware<TokenValidationMiddleware>();
+
+app.UseRateLimiter();
 
 app.Run();

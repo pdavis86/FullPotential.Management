@@ -11,7 +11,33 @@ public sealed class GeneralDbContext : DbContext
     {
     }
 
+    #region Sets
+
+    public DbSet<Character> Characters { get; set; }
+
+    public DbSet<CharacterEquippedItem> CharacterEquippedItems { get; set; }
+
+    public DbSet<CharacterResource> CharacterResources { get; set; }
+
+    public DbSet<CharacterSetting> CharacterSettings { get; set; }
+
+    public DbSet<CombatItem> CombatItems { get; set; }
+
+    public DbSet<CombatItemEffect> CombatItemEffects { get; set; }
+
+    public DbSet<Item> Items { get; set; }
+
+    public DbSet<ItemAttribute> ItemAttributes { get; set; }
+
+    public DbSet<ItemDrawing> ItemDrawings { get; set; }
+
+    public DbSet<ItemStack> ItemStacks { get; set; }
+
     public DbSet<User> Users { get; set; }
+
+    #endregion
+
+    #region Methods
 
     public new void SaveChanges()
     {
@@ -30,8 +56,10 @@ public sealed class GeneralDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         var helper = new ModelCreationHelper();
-
-        helper.OnModelCreating(modelBuilder.Entity<User>());
+        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        {
+            helper.OnModelCreating(modelBuilder.Entity(entityType.ClrType));
+        }
     }
 
     private void SetLastUpdated()
@@ -47,4 +75,6 @@ public sealed class GeneralDbContext : DbContext
             }
         }
     }
+
+    #endregion
 }

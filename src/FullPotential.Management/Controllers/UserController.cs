@@ -5,6 +5,7 @@ using FullPotential.Management.Features.Security;
 using FullPotential.Management.Features.Users;
 using FullPotential.Management.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 [ExcludeFromCodeCoverage]
 [ApiController]
@@ -18,7 +19,24 @@ public class UserController : AppControllerBase
         _userService = userService;
     }
 
+    [HttpGet("[action]")]
+    [EnableRateLimiting(SlidingWindowRateLimiter.PolicyName)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> IsUserNameAvailable(string userName)
+    {
+        var result = await _userService.IsUserNameAvailableAsync(userName);
+
+        if (!result)
+        {
+            return BadRequest();
+        }
+
+        return Ok();
+    }
+
     [HttpPost("[action]")]
+    [EnableRateLimiting(SlidingWindowRateLimiter.PolicyName)]
     [ProducesResponseType<BadRequestWithReasonResult>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Register(string userName, string password)
@@ -48,8 +66,9 @@ public class UserController : AppControllerBase
         return Ok(token);
     }
 
-    [AuthorizeToken]
     [HttpPost("[action]")]
+    [AuthorizeToken]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public new async Task<IActionResult> SignOut()
     {
         var (userName, token) = GetAuthorizationValues();

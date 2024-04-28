@@ -2,6 +2,8 @@
 
 public interface IUserService
 {
+    Task<bool> IsUserNameAvailableAsync(string userName);
+
     Task<RegistrationResult> RegisterAsync(string userName, string password);
 
     Task<string?> SignInAsync(string userName, string password);

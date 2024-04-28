@@ -2,6 +2,7 @@
 
 using FullPotential.Management.Utilities;
 using FullPotential.Persistence;
+using FullPotential.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 
 public class UserService : IUserService
@@ -18,6 +19,11 @@ public class UserService : IUserService
         _cryptoService = cryptoService;
         _dbContext = dbContext;
         _dateTimeProvider = dateTimeProvider;
+    }
+
+    public async Task<bool> IsUserNameAvailableAsync(string userName)
+    {
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName) == null;
     }
 
     public async Task<RegistrationResult> RegisterAsync(string userName, string password)
@@ -37,7 +43,12 @@ public class UserService : IUserService
         var passwordSalt = _cryptoService.GetNewSalt();
         var passwordHash = _cryptoService.Pbkdf2(password, passwordSalt);
 
-        var newUser = new Persistence.Entities.User(userName, passwordSalt, passwordHash);
+        var newUser = new User
+        {
+            UserName = userName,
+            PasswordSalt = passwordSalt,
+            PasswordHash = passwordHash
+        };
 
         _dbContext.Users.Add(newUser);
         await _dbContext.SaveChangesAsync();
@@ -68,6 +79,14 @@ public class UserService : IUserService
 
             await _dbContext.SaveChangesAsync();
         }
+
+        //todo: remove
+        //var c = new Character { Owner = user };
+        //_dbContext.Characters.Add(c);
+        //_dbContext.SaveChanges();
+        //_dbContext.CharacterResources.Add(new CharacterResource { Character = c, ResourceId = Guid.NewGuid(), Value = 56 });
+        //_dbContext.SaveChanges();
+        //var temp = _dbContext.Characters.Include(c => c.Resources);
 
         return user.Token;
     }

@@ -2,18 +2,16 @@
 
 using System.ComponentModel;
 using System.Reflection;
-using FullPotential.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public class ModelCreationHelper
 {
-    public void OnModelCreating<T>(EntityTypeBuilder<T> entityTypeBuilder)
-        where T : EntityBase
+    public void OnModelCreating(EntityTypeBuilder entityTypeBuilder)
     {
         AddEntityBaseFeatures(entityTypeBuilder);
 
-        var entityType = typeof(T);
+        var entityType = entityTypeBuilder.Metadata.ClrType;
 
         AddConditionalIndex(entityType, entityTypeBuilder);
 
@@ -30,16 +28,14 @@ public class ModelCreationHelper
         }
     }
 
-    private void AddEntityBaseFeatures<T>(EntityTypeBuilder<T> entityTypeBuilder)
-        where T : EntityBase
+    private void AddEntityBaseFeatures(EntityTypeBuilder entityTypeBuilder)
     {
         entityTypeBuilder
-            .Property(b => b.Created)
+            .Property(nameof(EntityBase.Created))
             .HasDefaultValueSql("GETUTCDATE()");
     }
 
-    private void AddConditionalIndex<T>(Type entityType, EntityTypeBuilder<T> entityTypeBuilder)
-        where T : EntityBase
+    private void AddConditionalIndex(Type entityType, EntityTypeBuilder entityTypeBuilder)
     {
         var attribute = entityType.GetCustomAttribute<ConditionalIndexAttribute>();
 
@@ -54,8 +50,7 @@ public class ModelCreationHelper
             .HasFilter(attribute.Filter);
     }
 
-    private void AddDefaultValue<T>(PropertyInfo prop, EntityTypeBuilder<T> entityTypeBuilder)
-        where T : EntityBase
+    private void AddDefaultValue(PropertyInfo prop, EntityTypeBuilder entityTypeBuilder)
     {
         var attribute = prop.GetCustomAttribute<DefaultValueAttribute>();
 

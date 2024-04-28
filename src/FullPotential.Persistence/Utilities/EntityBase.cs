@@ -1,6 +1,6 @@
-﻿namespace FullPotential.Persistence.Entities;
+﻿namespace FullPotential.Persistence.Utilities;
 
-public abstract class EntityBase
+public abstract class EntityBase : IEntity
 {
     public Guid Id { get; set; }
 
