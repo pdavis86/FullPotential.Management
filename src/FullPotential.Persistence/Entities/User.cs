@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations;
 using FullPotential.Persistence.Utilities;
 using Microsoft.EntityFrameworkCore;
 
-[Index(nameof(UserName), IsUnique = true)]
+[Index(nameof(Username), IsUnique = true)]
 [ConditionalIndex(nameof(EmailAddress), $"[{nameof(IsEmailAddressValidated)}] = 1", true)]
 public class User : EntityBase
 {
     [Unicode(false)]
     [MaxLength(50)]
-    public required string UserName { get; set; }
+    public required string Username { get; set; }
 
     [MaxLength(32)]
     public required byte[] PasswordSalt { get; set; }

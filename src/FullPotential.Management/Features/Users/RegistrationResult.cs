@@ -3,6 +3,6 @@
 public enum RegistrationResult
 {
     Success,
-    UserNameInUse,
+    UsernameInUse,
     PasswordTooShort
 }

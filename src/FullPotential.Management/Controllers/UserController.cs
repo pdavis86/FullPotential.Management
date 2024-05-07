@@ -3,9 +3,9 @@ namespace FullPotential.Management.Controllers;
 using System.Diagnostics.CodeAnalysis;
 using FullPotential.Management.Features.Security;
 using FullPotential.Management.Features.Users;
+using FullPotential.Management.Features.Users.Models;
 using FullPotential.Management.Utilities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.RateLimiting;
 
 [ExcludeFromCodeCoverage]
 [ApiController]
@@ -20,12 +20,11 @@ public class UserController : AppControllerBase
     }
 
     [HttpGet("[action]")]
-    [EnableRateLimiting(SlidingWindowRateLimiter.PolicyName)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> IsUserNameAvailable(string userName)
+    public async Task<IActionResult> IsUsernameAvailable(string userName)
     {
-        var result = await _userService.IsUserNameAvailableAsync(userName);
+        var result = await _userService.IsUsernameAvailableAsync(userName);
 
         if (!result)
         {
@@ -36,12 +35,11 @@ public class UserController : AppControllerBase
     }
 
     [HttpPost("[action]")]
-    [EnableRateLimiting(SlidingWindowRateLimiter.PolicyName)]
     [ProducesResponseType<BadRequestWithReasonResult>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Register(string userName, string password)
+    public async Task<IActionResult> Register(string username, string password)
     {
-        var result = await _userService.RegisterAsync(userName, password);
+        var result = await _userService.RegisterAsync(username, password);
 
         if (result != RegistrationResult.Success)
         {
@@ -54,9 +52,9 @@ public class UserController : AppControllerBase
     [HttpPost("[action]")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType<string>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> SignInWithPassword(string userName, string password)
+    public async Task<IActionResult> SignInWithPassword(SignIn model)
     {
-        var token = await _userService.SignInAsync(userName, password);
+        var token = await _userService.SignInAsync(model.Username, model.Password);
 
         if (token == null)
         {
@@ -66,13 +64,12 @@ public class UserController : AppControllerBase
         return Ok(token);
     }
 
-    [HttpPost("[action]")]
     [AuthorizeToken]
+    [HttpPost("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public new async Task<IActionResult> SignOut()
     {
-        var (userName, token) = GetAuthorizationValues();
-        await _userService.SignOutAsync(userName, token);
+        await _userService.ResetTokenAsync(GetUsername()!);
         return Ok();
     }
 }

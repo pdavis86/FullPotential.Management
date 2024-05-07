@@ -13,8 +13,7 @@ public class TokenValidationMiddleware
 
     public async Task InvokeAsync(HttpContext httpContext, IUserService userService)
     {
-        var endpoint = httpContext.GetEndpoint();
-        var authorizeAttribute = endpoint?.Metadata?.GetMetadata<AuthorizeTokenAttribute>();
+        var authorizeAttribute = httpContext.GetEndpoint()?.Metadata.GetMetadata<AuthorizeTokenAttribute>();
 
         if (authorizeAttribute is not null && !await authorizeAttribute.IsTokenValid(httpContext, userService))
         {

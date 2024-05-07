@@ -1,22 +1,42 @@
 ﻿namespace FullPotential.Management.Controllers;
 
+using System.Text.Json;
+using FullPotential.Management.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
+[EnableRateLimiting(SlidingWindowRateLimiter.PolicyName)]
 public abstract class AppControllerBase : ControllerBase
 {
     public const string AuthHeaderName = "X-Auth";
-    public const string AuthHeaderDescription = "userName;token";
+    public const string AuthHeaderDescription = "username;token";
+
+    private static readonly JsonSerializerOptions UnityJsonSerializerOptions = new JsonSerializerOptions
+    {
+        PropertyNamingPolicy = null
+    };
 
     [NonAction]
-    public (string UserName, string Token) GetAuthorizationValues()
+    protected string? GetUsername()
     {
-        return GetAuthorizationValues(Request);
+        return GetAuthorizationValues(Request).Username;
     }
 
-    public static (string UserName, string Token) GetAuthorizationValues(HttpRequest request)
+    public static (string Username, string Token) GetAuthorizationValues(HttpRequest request)
     {
         var headerValue = request.Headers[AuthHeaderName].ToString();
         var split = headerValue.Split(';');
+
+        if (split.Length != 2)
+        {
+            return (null, null);
+        }
+
         return (split[0], split[1]);
+    }
+
+    public static JsonResult UnityJsonResult(object? value)
+    {
+        return new JsonResult(value, UnityJsonSerializerOptions);
     }
 }

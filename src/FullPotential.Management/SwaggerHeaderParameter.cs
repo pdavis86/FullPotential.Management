@@ -10,7 +10,7 @@ public class SwaggerHeaderParameter : IOperationFilter
     {
         operation.Parameters ??= new List<OpenApiParameter>();
 
-        if (operation.Parameters.FirstOrDefault(p => p.Name == "userName") == null)
+        if (operation.Parameters.FirstOrDefault(p => p.Name == "username") == null)
         {
             operation.Parameters.Add(new OpenApiParameter
             {

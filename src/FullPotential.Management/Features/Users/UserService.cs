@@ -21,23 +21,23 @@ public class UserService : IUserService
         _dateTimeProvider = dateTimeProvider;
     }
 
-    public async Task<bool> IsUserNameAvailableAsync(string userName)
+    public async Task<bool> IsUsernameAvailableAsync(string username)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName) == null;
+        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username) == null;
     }
 
-    public async Task<RegistrationResult> RegisterAsync(string userName, string password)
+    public async Task<RegistrationResult> RegisterAsync(string username, string password)
     {
         if (password.Length < 8)
         {
             return RegistrationResult.PasswordTooShort;
         }
 
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
 
         if (user != null)
         {
-            return RegistrationResult.UserNameInUse;
+            return RegistrationResult.UsernameInUse;
         }
 
         var passwordSalt = _cryptoService.GetNewSalt();
@@ -45,7 +45,7 @@ public class UserService : IUserService
 
         var newUser = new User
         {
-            UserName = userName,
+            Username = username,
             PasswordSalt = passwordSalt,
             PasswordHash = passwordHash
         };
@@ -56,9 +56,9 @@ public class UserService : IUserService
         return RegistrationResult.Success;
     }
 
-    public async Task<string?> SignInAsync(string userName, string password)
+    public async Task<string?> SignInAsync(string username, string password)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
 
         if (user == null)
         {
@@ -91,9 +91,9 @@ public class UserService : IUserService
         return user.Token;
     }
 
-    public async Task SignOutAsync(string userName, string token)
+    public async Task ResetTokenAsync(string username)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Token == token);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
 
         if (user == null)
         {
@@ -106,9 +106,9 @@ public class UserService : IUserService
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<bool> IsTokenValidAsync(string userName, string token)
+    public async Task<bool> IsTokenValidAsync(string username, string token)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Token == token);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username && u.Token == token);
 
         if (user == null || !user.TokenExpiry.HasValue)
         {

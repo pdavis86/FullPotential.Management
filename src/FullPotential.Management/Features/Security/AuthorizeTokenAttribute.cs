@@ -9,6 +9,12 @@ public class AuthorizeTokenAttribute : Attribute
     public async Task<bool> IsTokenValid(HttpContext httpContext, IUserService userService)
     {
         var (username, token) = AppControllerBase.GetAuthorizationValues(httpContext.Request);
+
+        if (userService == null || token == null)
+        {
+            return false;
+        }
+
         return await userService.IsTokenValidAsync(username, token);
     }
 }

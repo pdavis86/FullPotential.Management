@@ -2,13 +2,13 @@
 
 public interface IUserService
 {
-    Task<bool> IsUserNameAvailableAsync(string userName);
+    Task<bool> IsUsernameAvailableAsync(string username);
 
-    Task<RegistrationResult> RegisterAsync(string userName, string password);
+    Task<RegistrationResult> RegisterAsync(string username, string password);
 
-    Task<string?> SignInAsync(string userName, string password);
+    Task<string?> SignInAsync(string username, string password);
 
-    Task SignOutAsync(string userName, string token);
+    Task ResetTokenAsync(string username);
 
-    Task<bool> IsTokenValidAsync(string userName, string token);
+    Task<bool> IsTokenValidAsync(string username, string token);
 }
