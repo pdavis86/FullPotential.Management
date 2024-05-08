@@ -19,6 +19,8 @@ public class UserController : AppControllerBase
         _userService = userService;
     }
 
+    //todo: bad practice to return 400 for a valid request!
+
     [HttpGet("[action]")]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status200OK)]
@@ -65,11 +67,20 @@ public class UserController : AppControllerBase
     }
 
     [AuthorizeToken]
-    [HttpPost("[action]")]
+    [HttpGet("[action]")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public new async Task<IActionResult> SignOut()
     {
         await _userService.ResetTokenAsync(GetUsername()!);
         return Ok();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> IsTokenValid(string username, string token)
+    {
+        var isValid = await _userService.IsTokenValidAsync(username, token);
+        return isValid
+            ? Ok()
+            : BadRequest();
     }
 }

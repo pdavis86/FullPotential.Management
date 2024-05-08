@@ -29,7 +29,7 @@ public abstract class AppControllerBase : ControllerBase
 
         if (split.Length != 2)
         {
-            return (null, null);
+            return (string.Empty, string.Empty);
         }
 
         return (split[0], split[1]);
