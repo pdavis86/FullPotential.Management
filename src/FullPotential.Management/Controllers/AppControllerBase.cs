@@ -1,9 +1,9 @@
-﻿namespace FullPotential.Management.Controllers;
-
-using System.Text.Json;
+﻿using System.Text.Json;
 using FullPotential.Management.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+
+namespace FullPotential.Management.Controllers;
 
 [EnableRateLimiting(SlidingWindowRateLimiter.PolicyName)]
 public abstract class AppControllerBase : ControllerBase

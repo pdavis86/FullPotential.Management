@@ -76,36 +76,6 @@ namespace FullPotential.Persistence.Migrations
                     b.ToTable("CharacterEquippedItems");
                 });
 
-            modelBuilder.Entity("FullPotential.Persistence.Entities.CharacterResource", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CharacterId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("ResourceId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CharacterId");
-
-                    b.ToTable("CharacterResources");
-                });
-
             modelBuilder.Entity("FullPotential.Persistence.Entities.CharacterSetting", b =>
                 {
                     b.Property<Guid>("Id")
@@ -122,14 +92,16 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -161,9 +133,6 @@ namespace FullPotential.Persistence.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("ResourceTypeId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid?>("ShapeTypeId")
                         .HasColumnType("uniqueidentifier");
 
@@ -174,6 +143,9 @@ namespace FullPotential.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("TargetingVisualsTypeId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ValuePoolId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -211,11 +183,44 @@ namespace FullPotential.Persistence.Migrations
                     b.ToTable("CombatItemEffects");
                 });
 
+            modelBuilder.Entity("FullPotential.Persistence.Entities.Instance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<DateTime>("Created")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Port")
+                        .HasColumnType("int");
+
+                    b.Property<int>("State")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Instances");
+                });
+
             modelBuilder.Entity("FullPotential.Persistence.Entities.Item", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int?>("Count")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Created")
                         .ValueGeneratedOnAdd()
@@ -227,7 +232,8 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
@@ -261,14 +267,16 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("Key")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -290,7 +298,8 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("DrawingCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.Property<Guid>("ItemId")
                         .HasColumnType("uniqueidentifier");
@@ -303,40 +312,6 @@ namespace FullPotential.Persistence.Migrations
                     b.HasIndex("ItemId");
 
                     b.ToTable("ItemDrawings");
-                });
-
-            modelBuilder.Entity("FullPotential.Persistence.Entities.ItemStack", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("BaseName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Created")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTime>("LastUpdated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RegistryTypeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("ItemStacks");
                 });
 
             modelBuilder.Entity("FullPotential.Persistence.Entities.User", b =>
@@ -379,7 +354,7 @@ namespace FullPotential.Persistence.Migrations
                     b.Property<DateTime?>("TokenExpiry")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -391,7 +366,7 @@ namespace FullPotential.Persistence.Migrations
                         .IsUnique()
                         .HasFilter("[IsEmailAddressValidated] = 1");
 
-                    b.HasIndex("UserName")
+                    b.HasIndex("Username")
                         .IsUnique();
 
                     b.ToTable("Users");
@@ -412,17 +387,6 @@ namespace FullPotential.Persistence.Migrations
                 {
                     b.HasOne("FullPotential.Persistence.Entities.Character", "Character")
                         .WithMany("EquippedItems")
-                        .HasForeignKey("CharacterId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Character");
-                });
-
-            modelBuilder.Entity("FullPotential.Persistence.Entities.CharacterResource", b =>
-                {
-                    b.HasOne("FullPotential.Persistence.Entities.Character", "Character")
-                        .WithMany("Resources")
                         .HasForeignKey("CharacterId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -496,22 +460,9 @@ namespace FullPotential.Persistence.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("FullPotential.Persistence.Entities.ItemStack", b =>
-                {
-                    b.HasOne("FullPotential.Persistence.Entities.Character", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
-                });
-
             modelBuilder.Entity("FullPotential.Persistence.Entities.Character", b =>
                 {
                     b.Navigation("EquippedItems");
-
-                    b.Navigation("Resources");
 
                     b.Navigation("Settings");
                 });

@@ -1,6 +1,6 @@
-﻿namespace FullPotential.Persistence.Entities;
+﻿using FullPotential.Persistence.Utilities;
 
-using FullPotential.Persistence.Utilities;
+namespace FullPotential.Persistence.Entities;
 
 public class CombatItem : EntityBase
 {
@@ -16,7 +16,7 @@ public class CombatItem : EntityBase
 
     public Guid? ShapeVisualsTypeId { get; set; }
 
-    public Guid? ResourceTypeId { get; set; }
+    public Guid? ValuePoolId { get; set; }
 
     public int? Ammo { get; set; }
 

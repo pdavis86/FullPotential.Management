@@ -1,7 +1,7 @@
-﻿namespace FullPotential.Persistence;
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
+
+namespace FullPotential.Persistence;
 
 public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<GeneralDbContext>
 {

@@ -1,8 +1,8 @@
-﻿namespace FullPotential.Management;
-
-using FullPotential.Management.Features.Instances;
+﻿using FullPotential.Management.Features.Instances;
 using FullPotential.Management.Features.Users;
 using FullPotential.Management.Utilities;
+
+namespace FullPotential.Management;
 
 public static class ServicesConfig
 {

@@ -1,8 +1,8 @@
-﻿namespace FullPotential.Persistence;
-
-using FullPotential.Persistence.Entities;
+﻿using FullPotential.Persistence.Entities;
 using FullPotential.Persistence.Utilities;
 using Microsoft.EntityFrameworkCore;
+
+namespace FullPotential.Persistence;
 
 public sealed class GeneralDbContext : DbContext
 {
@@ -17,8 +17,6 @@ public sealed class GeneralDbContext : DbContext
 
     public DbSet<CharacterEquippedItem> CharacterEquippedItems { get; set; }
 
-    public DbSet<CharacterResource> CharacterResources { get; set; }
-
     public DbSet<CharacterSetting> CharacterSettings { get; set; }
 
     public DbSet<CombatItem> CombatItems { get; set; }
@@ -31,9 +29,9 @@ public sealed class GeneralDbContext : DbContext
 
     public DbSet<ItemDrawing> ItemDrawings { get; set; }
 
-    public DbSet<ItemStack> ItemStacks { get; set; }
-
     public DbSet<User> Users { get; set; }
+
+    public DbSet<Instance> Instances { get; set; }
 
     #endregion
 
@@ -58,8 +56,10 @@ public sealed class GeneralDbContext : DbContext
         var helper = new ModelCreationHelper();
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            helper.OnModelCreating(modelBuilder.Entity(entityType.ClrType));
+            helper.AdditionalEntitySetUp(modelBuilder.Entity(entityType.ClrType));
         }
+
+        AddSeedData(modelBuilder);
     }
 
     private void SetLastUpdated()
@@ -77,4 +77,13 @@ public sealed class GeneralDbContext : DbContext
     }
 
     #endregion
+
+    private static void AddSeedData(ModelBuilder modelBuilder)
+    {
+        //modelBuilder.Entity<InstanceState>().HasData([
+        //    new InstanceState { Id = InstanceState.StartingUp, Name = nameof(InstanceState.StartingUp) },
+        //    new InstanceState { Id = InstanceState.Available, Name = nameof(InstanceState.Available) },
+        //    new InstanceState { Id = InstanceState.Full, Name = nameof(InstanceState.Full) }
+        //]);
+    }
 }

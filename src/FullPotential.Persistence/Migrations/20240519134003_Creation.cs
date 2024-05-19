@@ -6,11 +6,47 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FullPotential.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class MoreTables : Migration
+    public partial class Creation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Instances",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    State = table.Column<int>(type: "int", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(2048)", maxLength: 2048, nullable: false),
+                    Port = table.Column<int>(type: "int", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Instances", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false),
+                    PasswordSalt = table.Column<byte[]>(type: "varbinary(32)", maxLength: 32, nullable: false),
+                    PasswordHash = table.Column<byte[]>(type: "varbinary(256)", maxLength: 256, nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: true),
+                    TokenExpiry = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EmailAddress = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: true),
+                    IsEmailAddressValidated = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Characters",
                 columns: table => new
@@ -54,35 +90,13 @@ namespace FullPotential.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CharacterResources",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CharacterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ResourceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Value = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CharacterResources", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CharacterResources_Characters_CharacterId",
-                        column: x => x.CharacterId,
-                        principalTable: "Characters",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CharacterSettings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CharacterId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -104,8 +118,9 @@ namespace FullPotential.Persistence.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RegistryTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     VisualsTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Count = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -114,29 +129,6 @@ namespace FullPotential.Persistence.Migrations
                     table.PrimaryKey("PK_Items", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Items_Characters_OwnerId",
-                        column: x => x.OwnerId,
-                        principalTable: "Characters",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ItemStacks",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RegistryTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BaseName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Count = table.Column<int>(type: "int", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ItemStacks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ItemStacks_Characters_OwnerId",
                         column: x => x.OwnerId,
                         principalTable: "Characters",
                         principalColumn: "Id",
@@ -154,7 +146,7 @@ namespace FullPotential.Persistence.Migrations
                     TargetingVisualsTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ShapeTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ShapeVisualsTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ResourceTypeId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ValuePoolId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Ammo = table.Column<int>(type: "int", nullable: true),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
@@ -176,8 +168,8 @@ namespace FullPotential.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Key = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Key = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -198,7 +190,7 @@ namespace FullPotential.Persistence.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ItemId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DrawingCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DrawingCode = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: false),
                     Created = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     LastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -240,11 +232,6 @@ namespace FullPotential.Persistence.Migrations
                 column: "CharacterId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CharacterResources_CharacterId",
-                table: "CharacterResources",
-                column: "CharacterId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Characters_OwnerId",
                 table: "Characters",
                 column: "OwnerId");
@@ -281,9 +268,17 @@ namespace FullPotential.Persistence.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ItemStacks_OwnerId",
-                table: "ItemStacks",
-                column: "OwnerId");
+                name: "IX_Users_EmailAddress",
+                table: "Users",
+                column: "EmailAddress",
+                unique: true,
+                filter: "[IsEmailAddressValidated] = 1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -293,22 +288,19 @@ namespace FullPotential.Persistence.Migrations
                 name: "CharacterEquippedItems");
 
             migrationBuilder.DropTable(
-                name: "CharacterResources");
-
-            migrationBuilder.DropTable(
                 name: "CharacterSettings");
 
             migrationBuilder.DropTable(
                 name: "CombatItemEffects");
 
             migrationBuilder.DropTable(
+                name: "Instances");
+
+            migrationBuilder.DropTable(
                 name: "ItemAttributes");
 
             migrationBuilder.DropTable(
                 name: "ItemDrawings");
-
-            migrationBuilder.DropTable(
-                name: "ItemStacks");
 
             migrationBuilder.DropTable(
                 name: "CombatItems");
@@ -318,6 +310,9 @@ namespace FullPotential.Persistence.Migrations
 
             migrationBuilder.DropTable(
                 name: "Characters");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

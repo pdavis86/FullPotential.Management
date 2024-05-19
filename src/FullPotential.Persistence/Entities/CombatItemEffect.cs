@@ -1,6 +1,6 @@
-﻿namespace FullPotential.Persistence.Entities;
+﻿using FullPotential.Persistence.Utilities;
 
-using FullPotential.Persistence.Utilities;
+namespace FullPotential.Persistence.Entities;
 
 public class CombatItemEffect : EntityBase
 {

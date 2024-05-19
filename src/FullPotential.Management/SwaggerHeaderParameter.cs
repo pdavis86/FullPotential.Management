@@ -1,8 +1,8 @@
-﻿namespace FullPotential.Management;
-
-using FullPotential.Management.Controllers;
+﻿using FullPotential.Management.Controllers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
+namespace FullPotential.Management;
 
 public class SwaggerHeaderParameter : IOperationFilter
 {

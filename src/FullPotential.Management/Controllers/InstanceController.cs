@@ -1,9 +1,9 @@
-﻿namespace FullPotential.Management.Controllers;
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using FullPotential.Management.Features.Instances;
 using FullPotential.Management.Features.Security;
 using Microsoft.AspNetCore.Mvc;
+
+namespace FullPotential.Management.Controllers;
 
 [ExcludeFromCodeCoverage]
 [ApiController]

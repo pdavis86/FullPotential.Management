@@ -1,7 +1,7 @@
-﻿namespace FullPotential.Management.Features.Security;
-
-using FullPotential.Management.Controllers;
+﻿using FullPotential.Management.Controllers;
 using FullPotential.Management.Features.Users;
+
+namespace FullPotential.Management.Features.Security;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeTokenAttribute : Attribute

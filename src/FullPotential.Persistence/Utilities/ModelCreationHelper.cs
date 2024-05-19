@@ -1,13 +1,13 @@
-﻿namespace FullPotential.Persistence.Utilities;
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
+namespace FullPotential.Persistence.Utilities;
+
 public class ModelCreationHelper
 {
-    public void OnModelCreating(EntityTypeBuilder entityTypeBuilder)
+    public void AdditionalEntitySetUp(EntityTypeBuilder entityTypeBuilder)
     {
         AddEntityBaseFeatures(entityTypeBuilder);
 

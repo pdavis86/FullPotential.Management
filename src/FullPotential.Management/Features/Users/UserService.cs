@@ -1,9 +1,9 @@
-﻿namespace FullPotential.Management.Features.Users;
-
-using FullPotential.Management.Utilities;
+﻿using FullPotential.Management.Utilities;
 using FullPotential.Persistence;
 using FullPotential.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+
+namespace FullPotential.Management.Features.Users;
 
 public class UserService : IUserService
 {
@@ -79,14 +79,6 @@ public class UserService : IUserService
 
             await _dbContext.SaveChangesAsync();
         }
-
-        //todo: remove
-        //var c = new Character { Owner = user };
-        //_dbContext.Characters.Add(c);
-        //_dbContext.SaveChanges();
-        //_dbContext.CharacterResources.Add(new CharacterResource { Character = c, ResourceId = Guid.NewGuid(), Value = 56 });
-        //_dbContext.SaveChanges();
-        //var temp = _dbContext.Characters.Include(c => c.Resources);
 
         return user.Token;
     }

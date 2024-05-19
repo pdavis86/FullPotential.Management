@@ -1,6 +1,6 @@
-﻿namespace FullPotential.Management.Utilities;
+﻿using Microsoft.AspNetCore.RateLimiting;
 
-using Microsoft.AspNetCore.RateLimiting;
+namespace FullPotential.Management.Utilities;
 
 public class SlidingWindowRateLimiter
 {

@@ -1,5 +1,4 @@
-﻿
-namespace FullPotential.Management.Utilities;
+﻿namespace FullPotential.Management.Utilities;
 
 public class SystemTimeProvider : ITimeProvider
 {

@@ -1,6 +1,6 @@
-﻿namespace FullPotential.Management.Utilities;
+﻿using System.Security.Cryptography;
 
-using System.Security.Cryptography;
+namespace FullPotential.Management.Utilities;
 
 public class CryptoService : ICryptoService
 {

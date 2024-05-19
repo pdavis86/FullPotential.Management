@@ -1,9 +1,9 @@
-﻿namespace FullPotential.Persistence.Entities;
-
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FullPotential.Persistence.Utilities;
 using Microsoft.EntityFrameworkCore;
+
+namespace FullPotential.Persistence.Entities;
 
 [Index(nameof(Username), IsUnique = true)]
 [ConditionalIndex(nameof(EmailAddress), $"[{nameof(IsEmailAddressValidated)}] = 1", true)]

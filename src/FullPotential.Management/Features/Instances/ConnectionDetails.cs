@@ -2,7 +2,7 @@
 
 public class ConnectionDetails
 {
-    public required InstanceState Status { get; set; }
+    public required int Status { get; set; }
 
     public required string Address { get; set; }
 

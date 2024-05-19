@@ -1,6 +1,6 @@
-﻿namespace FullPotential.Management.Features.Security;
+﻿using FullPotential.Management.Features.Users;
 
-using FullPotential.Management.Features.Users;
+namespace FullPotential.Management.Features.Security;
 
 public class TokenValidationMiddleware
 {
