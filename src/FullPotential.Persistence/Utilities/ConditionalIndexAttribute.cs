@@ -1,4 +1,6 @@
-﻿namespace FullPotential.Persistence.Utilities;
+﻿// Resharper disable UnusedAutoPropertyAccessor.Global
+
+namespace FullPotential.Persistence.Utilities;
 
 public class ConditionalIndexAttribute : Attribute
 {

@@ -1,8 +1,11 @@
 using System.Diagnostics.CodeAnalysis;
+
 using FullPotential.Management.Features.Security;
 using FullPotential.Management.Features.Users;
-using FullPotential.Management.Features.Users.Models;
-using FullPotential.Management.Utilities.Models;
+using FullPotential.Models.User;
+using FullPotential.Models.Utilities;
+using FullPotential.Persistence;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace FullPotential.Management.Controllers;
@@ -14,7 +17,8 @@ public class UserController : AppControllerBase
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(GeneralDbContext dbContext, IUserService userService)
+        : base(dbContext)
     {
         _userService = userService;
     }
@@ -24,10 +28,7 @@ public class UserController : AppControllerBase
     {
         var isAvailable = await _userService.IsUsernameAvailableAsync(username);
 
-        return UnityJsonResult(new GenericResponse
-        {
-            IsSuccess = isAvailable
-        });
+        return UnityJsonResult(new GenericResponse(isAvailable));
     }
 
     [HttpPost("[action]")]
@@ -45,22 +46,23 @@ public class UserController : AppControllerBase
     [HttpPost("[action]")]
     public async Task<IActionResult> SignInWithPassword(Credentials model)
     {
-        var token = await _userService.SignInAsync(model.Username, model.PasswordOrToken);
+        var userData = await _userService.SignInWithPasswordAsync(model.Username, model.PasswordOrToken);
 
         return UnityJsonResult(new GenericResponse
         {
-            IsSuccess = !string.IsNullOrWhiteSpace(token),
-            Result = token
+            IsSuccess = !string.IsNullOrWhiteSpace(userData?.Token),
+            Result = userData
         });
     }
 
     [HttpPost("[action]")]
     public async Task<IActionResult> IsTokenValid(Credentials model)
     {
-        var isValid = await _userService.IsTokenValidAsync(model.Username, model.PasswordOrToken);
+        var userData = await _userService.SignInWithTokenAsync(model.Username, model.PasswordOrToken);
         return UnityJsonResult(new GenericResponse
         {
-            IsSuccess = isValid
+            IsSuccess = !string.IsNullOrWhiteSpace(userData?.Token),
+            Result = userData
         });
     }
 
@@ -68,10 +70,7 @@ public class UserController : AppControllerBase
     [HttpGet("[action]")]
     public new async Task<IActionResult> SignOut()
     {
-        await _userService.ResetTokenAsync(GetUsername()!);
-        return UnityJsonResult(new GenericResponse
-        {
-            IsSuccess = true
-        });
+        await _userService.ResetTokenAsync(GetUsername());
+        return UnityJsonResult(new GenericResponse(true));
     }
 }

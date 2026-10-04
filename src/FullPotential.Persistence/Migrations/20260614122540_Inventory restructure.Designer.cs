@@ -4,6 +4,7 @@ using FullPotential.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FullPotential.Persistence.Migrations
 {
     [DbContext(typeof(GeneralDbContext))]
-    partial class GeneralDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260614122540_Inventory restructure")]
+    partial class Inventoryrestructure
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -101,8 +104,8 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -228,8 +231,8 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -289,8 +292,8 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
 
@@ -324,8 +327,8 @@ namespace FullPotential.Persistence.Migrations
 
                     b.Property<byte[]>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(512)
-                        .HasColumnType("varbinary(512)");
+                        .HasMaxLength(256)
+                        .HasColumnType("varbinary(256)");
 
                     b.Property<byte[]>("PasswordSalt")
                         .IsRequired()

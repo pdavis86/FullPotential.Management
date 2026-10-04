@@ -10,11 +10,11 @@ public class AuthorizeTokenAttribute : Attribute
     {
         var (username, token) = AppControllerBase.GetAuthorizationValues(httpContext.Request);
 
-        if (userService == null || token == null)
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(token))
         {
             return false;
         }
 
-        return await userService.IsTokenValidAsync(username, token);
+        return (await userService.SignInWithTokenAsync(username, token))?.Token != null;
     }
 }

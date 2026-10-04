@@ -1,7 +1,10 @@
 ﻿using System.Text.Json;
 using FullPotential.Management.Utilities;
+using FullPotential.Persistence;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 
 namespace FullPotential.Management.Controllers;
 
@@ -15,11 +18,30 @@ public abstract class AppControllerBase : ControllerBase
     {
         PropertyNamingPolicy = null
     };
+    
+    private GeneralDbContext _dbContext;
+
+    protected AppControllerBase(GeneralDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
 
     [NonAction]
-    protected string? GetUsername()
+    protected string GetUsername()
     {
         return GetAuthorizationValues(Request).Username;
+    }
+
+    [NonAction]
+    protected async Task<IUserContext> GetUserContextAsync()
+    {
+        var (username, token) = GetAuthorizationValues(Request);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username && x.Token == token);
+        return new UserContext
+        {
+            Id = user?.Id,
+            Username = user?.Username
+        };
     }
 
     public static (string Username, string Token) GetAuthorizationValues(HttpRequest request)

@@ -2,6 +2,10 @@
 using FullPotential.Persistence.Utilities;
 using Microsoft.EntityFrameworkCore;
 
+// Resharper disable CSharpWarnings::CS8618
+// Resharper disable UnusedMember.Global
+// Resharper disable UnusedParameter.Local
+
 namespace FullPotential.Persistence;
 
 public sealed class GeneralDbContext : DbContext
@@ -13,25 +17,25 @@ public sealed class GeneralDbContext : DbContext
 
     #region Sets
 
+    public DbSet<User> Users { get; set; }
+
+    public DbSet<Instance> Instances { get; set; }
+
     public DbSet<Character> Characters { get; set; }
 
     public DbSet<CharacterEquippedItem> CharacterEquippedItems { get; set; }
 
     public DbSet<CharacterSetting> CharacterSettings { get; set; }
 
-    public DbSet<CombatItem> CombatItems { get; set; }
-
-    public DbSet<CombatItemEffect> CombatItemEffects { get; set; }
+    public DbSet<CharacterValuePool> CharacterValuePools { get; set; }
 
     public DbSet<Item> Items { get; set; }
 
     public DbSet<ItemAttribute> ItemAttributes { get; set; }
 
-    public DbSet<ItemDrawing> ItemDrawings { get; set; }
+    public DbSet<ItemEffect> ItemEffects { get; set; }
 
-    public DbSet<User> Users { get; set; }
-
-    public DbSet<Instance> Instances { get; set; }
+    public DbSet<ItemProperty> ItemProperties { get; set; }
 
     #endregion
 
@@ -59,7 +63,11 @@ public sealed class GeneralDbContext : DbContext
             helper.AdditionalEntitySetUp(modelBuilder.Entity(entityType.ClrType));
         }
 
-        AddSeedData(modelBuilder);
+        AddSpecialForeignKeys(modelBuilder);
+
+        AddIndexes(modelBuilder);
+
+        //AddSeedData(modelBuilder);
     }
 
     private void SetLastUpdated()
@@ -78,12 +86,32 @@ public sealed class GeneralDbContext : DbContext
 
     #endregion
 
-    private static void AddSeedData(ModelBuilder modelBuilder)
+    private void AddSpecialForeignKeys(ModelBuilder modelBuilder)
     {
-        //modelBuilder.Entity<InstanceState>().HasData([
-        //    new InstanceState { Id = InstanceState.StartingUp, Name = nameof(InstanceState.StartingUp) },
-        //    new InstanceState { Id = InstanceState.Available, Name = nameof(InstanceState.Available) },
-        //    new InstanceState { Id = InstanceState.Full, Name = nameof(InstanceState.Full) }
-        //]);
+        modelBuilder.Entity<CharacterSetting>()
+            .HasOne(x => x.Character)
+            .WithMany(x => x.Settings)
+            .HasForeignKey(x => x.CharacterId);
+
+        modelBuilder.Entity<CharacterValuePool>()
+            .HasOne(x => x.Character)
+            .WithMany(x => x.ValuePools)
+            .HasForeignKey(x => x.CharacterId);
     }
+
+    private static void AddIndexes(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<CharacterSetting>()
+            .HasIndex(x => new { x.CharacterId, x.Key })
+            .IsUnique();
+    }
+
+    //private static void AddSeedData(ModelBuilder modelBuilder)
+    //{
+    //    modelBuilder.Entity<InstanceState>().HasData([
+    //        new InstanceState { Id = InstanceState.StartingUp, Name = nameof(InstanceState.StartingUp) },
+    //        new InstanceState { Id = InstanceState.Available, Name = nameof(InstanceState.Available) },
+    //        new InstanceState { Id = InstanceState.Full, Name = nameof(InstanceState.Full) }
+    //    ]);
+    //}
 }

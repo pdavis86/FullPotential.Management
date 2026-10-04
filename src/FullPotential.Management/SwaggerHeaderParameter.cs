@@ -1,5 +1,8 @@
 ﻿using FullPotential.Management.Controllers;
+using FullPotential.Management.Features.Security;
+
 using Microsoft.OpenApi.Models;
+
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace FullPotential.Management;
@@ -10,7 +13,10 @@ public class SwaggerHeaderParameter : IOperationFilter
     {
         operation.Parameters ??= new List<OpenApiParameter>();
 
-        if (operation.Parameters.FirstOrDefault(p => p.Name == "username") == null)
+        var authorizeRequired = context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeTokenAttribute>().Any()
+            || context.MethodInfo.DeclaringType?.GetCustomAttributes(true).OfType<AuthorizeTokenAttribute>().Any() == true;
+
+        if (authorizeRequired)
         {
             operation.Parameters.Add(new OpenApiParameter
             {

@@ -2,9 +2,9 @@
 
 namespace FullPotential.Persistence.Entities;
 
-public class CombatItemEffect : EntityBase
+public class ItemEffect : EntityBase
 {
-    public required CombatItem CombatItem { get; set; }
+    public required Item Item { get; set; }
 
     public required Guid EffectId { get; set; }
 }

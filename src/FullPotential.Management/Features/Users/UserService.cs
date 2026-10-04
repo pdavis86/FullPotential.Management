@@ -1,6 +1,8 @@
 ﻿using FullPotential.Management.Utilities;
+using FullPotential.Models.User;
 using FullPotential.Persistence;
 using FullPotential.Persistence.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace FullPotential.Management.Features.Users;
@@ -23,7 +25,7 @@ public class UserService : IUserService
 
     public async Task<bool> IsUsernameAvailableAsync(string username)
     {
-        return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username) == null;
+        return await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username) == null;
     }
 
     public async Task<RegistrationResult> RegisterAsync(string username, string password)
@@ -33,7 +35,7 @@ public class UserService : IUserService
             return RegistrationResult.PasswordTooShort;
         }
 
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
 
         if (user != null)
         {
@@ -56,9 +58,9 @@ public class UserService : IUserService
         return RegistrationResult.Success;
     }
 
-    public async Task<string?> SignInAsync(string username, string password)
+    public async Task<UserData?> SignInWithPasswordAsync(string username, string password)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
 
         if (user == null)
         {
@@ -75,17 +77,51 @@ public class UserService : IUserService
         if (user.Token == null)
         {
             user.Token = _cryptoService.GetNewToken();
-            user.TokenExpiry = _dateTimeProvider.GetUtcNow().AddMonths(1).DateTime;
-
-            await _dbContext.SaveChangesAsync();
         }
 
-        return user.Token;
+        user.TokenExpiry = _dateTimeProvider.GetUtcNow().AddMonths(1).DateTime;
+
+        await _dbContext.SaveChangesAsync();
+
+        var lastUsedCharacter = await _dbContext.Characters.FirstOrDefaultAsync(x => x.User == user);
+
+        return new UserData
+        {
+            UserId = user.Id.ToString(),
+            Username = user.Username,
+            Token = user.Token,
+            CharacterId = lastUsedCharacter?.Id.ToString()
+        };
+    }
+
+    public async Task<UserData?> SignInWithTokenAsync(string username, string token)
+    {
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username && x.Token == token);
+
+        if (user == null || !user.TokenExpiry.HasValue)
+        {
+            return null;
+        }
+
+        if (user.TokenExpiry.Value < _dateTimeProvider.GetUtcNow())
+        {
+            return null;
+        }
+
+        var lastUsedCharacter = await _dbContext.Characters.FirstOrDefaultAsync(x => x.User == user);
+
+        return new UserData
+        {
+            UserId = user.Id.ToString(),
+            Username = user.Username,
+            Token = user.Token,
+            CharacterId = lastUsedCharacter?.Id.ToString()
+        };
     }
 
     public async Task ResetTokenAsync(string username)
     {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
+        var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Username == username);
 
         if (user == null)
         {
@@ -96,22 +132,5 @@ public class UserService : IUserService
         user.TokenExpiry = _dateTimeProvider.GetUtcNow().AddMonths(1).DateTime;
 
         await _dbContext.SaveChangesAsync();
-    }
-
-    public async Task<bool> IsTokenValidAsync(string username, string token)
-    {
-        var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username && u.Token == token);
-
-        if (user == null || !user.TokenExpiry.HasValue)
-        {
-            return false;
-        }
-
-        if (user.TokenExpiry.Value < _dateTimeProvider.GetUtcNow())
-        {
-            return false;
-        }
-
-        return true;
     }
 }

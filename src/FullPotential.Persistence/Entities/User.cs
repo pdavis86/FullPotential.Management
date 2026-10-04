@@ -16,7 +16,7 @@ public class User : EntityBase
     [MaxLength(32)]
     public required byte[] PasswordSalt { get; set; }
 
-    [MaxLength(256)]
+    [MaxLength(512)]
     public required byte[] PasswordHash { get; set; }
 
     [MaxLength(32)]

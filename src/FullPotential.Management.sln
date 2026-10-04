@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FullPotential.Management", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FullPotential.Persistence", "FullPotential.Persistence\FullPotential.Persistence.csproj", "{B9BCE56D-F5D6-459F-98BA-33AEAE528C0C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FullPotential.Models", "FullPotential.Models\FullPotential.Models.csproj", "{701D6359-4C0E-404D-967A-09DBC1D0B1AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B9BCE56D-F5D6-459F-98BA-33AEAE528C0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9BCE56D-F5D6-459F-98BA-33AEAE528C0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9BCE56D-F5D6-459F-98BA-33AEAE528C0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{701D6359-4C0E-404D-967A-09DBC1D0B1AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{701D6359-4C0E-404D-967A-09DBC1D0B1AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{701D6359-4C0E-404D-967A-09DBC1D0B1AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{701D6359-4C0E-404D-967A-09DBC1D0B1AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

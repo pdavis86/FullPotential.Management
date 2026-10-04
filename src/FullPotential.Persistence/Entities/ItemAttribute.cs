@@ -10,6 +10,6 @@ public class ItemAttribute : EntityBase
     [MaxLength(256)]
     public required string Key { get; set; }
 
-    [MaxLength(256)]
+    [MaxLength(2048)]
     public required string Value { get; set; }
 }

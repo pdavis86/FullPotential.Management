@@ -1,4 +1,7 @@
-﻿using FullPotential.Persistence;
+﻿using FullPotential.Management.Utilities;
+using FullPotential.Models.GameManagement;
+using FullPotential.Persistence;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace FullPotential.Management.Features.Instances;
@@ -13,7 +16,7 @@ public class InstanceService : IInstanceService
         _dbContext = dbContext;
     }
 
-    public async Task<ConnectionDetails> GetConnectionDetailsAsync(string username)
+    public async Task<ConnectionDetails> GetConnectionDetailsAsync(IUserContext userContext)
     {
         //todo: get an instance for the area of the universe where that user is
         var instance = await _dbContext.Instances.FirstOrDefaultAsync();
@@ -22,7 +25,7 @@ public class InstanceService : IInstanceService
         {
             var details = new ConnectionDetails
             {
-                Status = instance.State,
+                Status = (InstanceState)instance.State,
                 Address = instance.Address,
                 Port = instance.Port
             };
@@ -38,5 +41,17 @@ public class InstanceService : IInstanceService
             Address = "127.0.0.1",
             Port = 7777
         };
+    }
+
+    public async Task SaveConnectionDetailsAsync(IUserContext userContext, ConnectionDetails model)
+    {
+        //todo: save an instance for the area of the universe where that user is
+
+        await _dbContext.Instances.AddAsync(new Persistence.Entities.Instance
+        {
+            State = (int)model.Status,
+            Address = model.Address,
+            Port = model.Port
+        });
     }
 }

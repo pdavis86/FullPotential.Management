@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FullPotential.Models\FullPotential.Models.csproj" />
     <ProjectReference Include="..\FullPotential.Persistence\FullPotential.Persistence.csproj" />
   </ItemGroup>
 

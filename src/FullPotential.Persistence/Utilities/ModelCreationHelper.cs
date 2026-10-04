@@ -19,6 +19,7 @@ public class ModelCreationHelper
 
         foreach (var prop in props)
         {
+            // Resharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
             if (prop == null)
             {
                 continue;
